@@ -1,12 +1,11 @@
 {
-  "name": "protected-api-server",
+  "name": "fullstack-protected-app",
   "version": "1.0.0",
-  "description": "API protette con password usando Express e LowDB",
   "type": "module",
-  "main": "server.js",
+  "proxy": "http://127.0.0.1:3001",
   "scripts": {
-    "build": "cd ../frontend && npm install && npm run build && cp -r build ../build",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "cd frontend && npm install && npm run build && cp -r build ../"
   },
   "dependencies": {
     "cors": "^2.8.5",
