@@ -2,27 +2,34 @@
 import express from 'express';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Percorso assoluto al file db.json
+const file = path.join(__dirname, 'db.json');
+const adapter = new JSONFile(file);
+
+// ⚠️ Qui passiamo i dati di default al costruttore di Low
+const db = new Low(adapter, { messages: [] });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configura Lowdb
-const adapter = new JSONFile('db.json');
-const db = new Low(adapter);
-
-// Middleware
 app.use(express.json());
 
-// Inizializza il database
+// Leggi il file e inizializza se vuoto
 await db.read();
-db.data ||= { messages: [] };
+db.data ||= { messages: [] }; // fallback se il file è vuoto
 
-// Rotta principale
+// Rotta GET
 app.get('/', (req, res) => {
-  res.send('Benvenuto nella tua app Node.js con Lowdb!');
+  res.send('App funzionante con Lowdb!');
 });
 
-// Rotta per aggiungere un messaggio
+// Rotta POST per aggiungere un messaggio
 app.post('/message', async (req, res) => {
   const { text } = req.body;
   if (!text) return res.status(400).send('Testo mancante');
@@ -32,12 +39,11 @@ app.post('/message', async (req, res) => {
   res.send('Messaggio salvato!');
 });
 
-// Rotta per leggere tutti i messaggi
+// Rotta GET per leggere i messaggi
 app.get('/messages', (req, res) => {
   res.json(db.data.messages);
 });
 
-// Avvia il server
 app.listen(PORT, () => {
   console.log(`Server avviato su http://localhost:${PORT}`);
 });
