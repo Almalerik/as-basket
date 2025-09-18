@@ -1,14 +1,26 @@
-import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import express from 'express';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+// Serve React statico
+app.use(express.static(path.join(__dirname, 'build')));
+
+// Catch-all per routing React
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 const adapter = new JSONFile('db.json');
 const db = new Low(adapter, { messages: [] }); // 👈 modello iniziale
