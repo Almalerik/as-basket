@@ -1,0 +1,10 @@
+{
+  "messages": [],
+  "users": [
+    {
+      "id": 1,
+      "name": "Alex",
+      "email": "alex@example.com"
+    }
+  ]
+}
